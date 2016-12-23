@@ -1,0 +1,41 @@
+Data preprocessing
+
+Remove the ones with no text
+Remove the ones with titles longer than 100
+Remove the ones with texts longer than 500
+
+Buckets
+original (100, 20), (100, 50), (100, 100), (100, 500)
+memory-adjusted (100, 20), (100, 60)
+
+38268 examples
+
+32000 training
+3134 validation
+3134 test
+
+4476 / 38268 (11.7 %) have text length > 100 - skipping
+
+Vocabulary size: 37496
+Words that occur only once: 20427
+
+Not reversing the inputs
+
+Could not allocate tensor of shape
+[64,100,1,1024]
+
+Major problems I ran into:
+Getting data from reddit
+Out of bounds error (vocab size)
+Out of memory error
+
+checkpoint perplexity
+4600 15
+6200 9
+
+Increased LR at checkpoint 4600 from 0.5 to 2.0
+Decreased to 1.0 at 7600
+
+TODO: perplexity on the validation set using random weights.
+Perplexity on the testing set.
+
