@@ -135,8 +135,6 @@ def create_model(session, forward_only):
       forward_only=forward_only,
       dtype=dtype)
   ckpt = tf.train.get_checkpoint_state(FLAGS.train_dir)
-  print (FLAGS.train_dir)
-  print ("is checkpoint", ckpt)
   if ckpt and tf.gfile.Exists(ckpt.model_checkpoint_path):
     print("Reading model parameters from %s" % ckpt.model_checkpoint_path)
     model.saver.restore(session, ckpt.model_checkpoint_path)
@@ -246,7 +244,6 @@ def decode():
     while sentence:
       # Get token-ids for the input sentence.
       token_ids = data_utils.sentence_to_token_ids(tf.compat.as_bytes(sentence), en_vocab)
-      print ("token ids", token_ids)
       # Which bucket does it belong to?
       bucket_id = len(_buckets) - 1
       for i, bucket in enumerate(_buckets):
@@ -259,18 +256,12 @@ def decode():
       # Get a 1-element batch to feed the sentence to the model.
       encoder_inputs, decoder_inputs, target_weights = model.get_batch(
           {bucket_id: [(token_ids, [])]}, bucket_id)
-      print ("len enc inputs", len(encoder_inputs))
-      print ("len dec inputs", len(decoder_inputs))
       # Get output logits for the sentence.
       _, _, output_logits = model.step(sess, encoder_inputs, decoder_inputs,
                                        target_weights, bucket_id, True)
 
-      print ("output logits", output_logits)
-      print ("len of output logits", len(output_logits))
-      print ("shape of output logits 0", output_logits[0].shape)
       # This is a greedy decoder - outputs are just argmaxes of output_logits.
       outputs = [int(np.argmax(logit, axis=1)) for logit in output_logits]
-      print ("outputs", outputs)
       # If there is an EOS symbol in outputs, cut them at that point.
       if data_utils.EOS_ID in outputs:
         outputs = outputs[:outputs.index(data_utils.EOS_ID)]
